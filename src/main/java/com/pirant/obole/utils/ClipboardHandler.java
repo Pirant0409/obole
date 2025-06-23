@@ -9,6 +9,8 @@ import java.io.OutputStream;
 public class ClipboardHandler implements HttpHandler {
 
     public void handle (HttpExchange exchange) throws IOException{
+
+        System.out.println("test");
         if ("POST".equals(exchange.getRequestMethod())) {
             String body = new String(exchange.getRequestBody().readAllBytes());
             System.out.println("Received clipboard: " + body);
