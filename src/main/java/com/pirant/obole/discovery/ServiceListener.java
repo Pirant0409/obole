@@ -44,7 +44,7 @@ public class ServiceListener implements javax.jmdns.ServiceListener{
             String remoteAddress = info.getHostAddresses()[0];
 
             if (!remoteAddress.equals(localHostAddress)){
-                String entry = info.getName() + " - " + remoteAddress + " : " + info.getPort();
+                String entry = info.getName() + " - " + remoteAddress + ":" + info.getPort();
                 if (!discoveredDevices.contains(entry)){
                     System.out.println("Service resolved: " + entry);
                     discoveredDevices.add(entry);

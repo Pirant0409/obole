@@ -68,7 +68,7 @@ public class MainApp extends Application{
                         }
 
                         int responseCode = conn.getResponseCode();
-                        System.out.println("envoyé à " + ip + ":" + port + " - code " + responseCode);
+                        System.out.println("Sent to " + ip + ":" + port + " - code " + responseCode);
                     } catch (IOException ex){
                         ex.printStackTrace();
                     }
