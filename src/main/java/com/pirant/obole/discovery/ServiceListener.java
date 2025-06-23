@@ -1,16 +1,22 @@
 package com.pirant.obole.discovery;
 
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
+
 import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceInfo;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+
 public class ServiceListener implements javax.jmdns.ServiceListener{
 
     private final String localHostAddress;
+    private final ObservableList<String> discoveredDevices;
 
-    public ServiceListener(){
+    public ServiceListener(ObservableList<String> discoveredDevices) {
         String localAddress = "127.0.0.1";
+        this.discoveredDevices = discoveredDevices;
         try{
             localAddress = InetAddress.getLocalHost().getHostAddress();
         }
@@ -32,12 +38,18 @@ public class ServiceListener implements javax.jmdns.ServiceListener{
 
     @Override
     public void serviceResolved(ServiceEvent event) {
-        ServiceInfo info = event.getInfo();
 
-        String remoteAddress = info.getHostAddresses()[0];
+        Platform.runLater(() ->{
+            ServiceInfo info = event.getInfo();
+            String remoteAddress = info.getHostAddresses()[0];
 
-        if (!remoteAddress.equals(localHostAddress)){
-            System.out.println("Service resolved: " + info.getName());
-        }
+            if (!remoteAddress.equals(localHostAddress)){
+                String entry = info.getName() + " - " + remoteAddress + " : " + info.getPort();
+                if (!discoveredDevices.contains(entry)){
+                    System.out.println("Service resolved: " + entry);
+                    discoveredDevices.add(entry);
+                }
+        }});
+
     }
 }
