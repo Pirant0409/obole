@@ -65,13 +65,14 @@ public class MainApp extends Application{
                 String receiver = findAddress(selected);
                 if (receiver != null){
                     new Thread(() -> {
+                        System.out.println(receiver);
                         try {
-                            phandler.send(receiver);
+                            phandler.send(receiver+"/pair");
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
 
-                    });
+                    }).start();
                 }
             }
         });
@@ -92,7 +93,7 @@ public class MainApp extends Application{
                 String receiver = findAddress(selected);
                 if (receiver != null) {
                     new Thread(()->{
-                        cbhandler.send(receiver);
+                        cbhandler.send(receiver+"/clipboard");
                     }).start();
 
                 }
@@ -135,7 +136,7 @@ public class MainApp extends Application{
         String ip = matcher.group(1);
         String port = matcher.group(2);
         //TODO: Hard-coded 5050 port. Should get the right port (not the obole service listener one but the HTTP receiver one)
-        String receiver = "http://" + ip + ":" + 5050 + "/clipboard";
+        String receiver = "http://" + ip + ":" + 5050;
         return receiver;
     }
     public static void main(String[] args) {
