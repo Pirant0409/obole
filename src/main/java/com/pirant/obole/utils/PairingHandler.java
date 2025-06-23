@@ -29,7 +29,7 @@ public class PairingHandler implements HttpHandler {
             PairingRequest pr = new PairingRequest(pk, deviceName);
             String json = gson.toJson(pr);
             if (pk != null){
-                System.out.println("Sending public key to " + receiver);
+                System.out.println("Sending" + json + "to " + receiver);
                 URL url = new URL(receiver);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
@@ -51,7 +51,7 @@ public class PairingHandler implements HttpHandler {
         if ("POST".equals(exchange.getRequestMethod())){
             String body = new String(exchange.getRequestBody().readAllBytes(), "UTF-8");
             JsonObject json = JsonParser.parseString(body).getAsJsonObject();
-            String publicKey = json.get("pk").getAsString();
+            String publicKey = json.get("publicKey").getAsString();
             String deviceName = json.get("deviceName").getAsString();
             try {
                 SecurityManager sm = new SecurityManager();
