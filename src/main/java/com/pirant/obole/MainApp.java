@@ -57,8 +57,8 @@ public class MainApp extends Application{
                 String port = matcher.group(2);
                 new Thread(()->{
                     try{
-                        System.out.println("Tentative d'envoi vers " + ip + ":" + port);
-                        URL url = new URL("http://" + ip + ":" + port + "/clipboard");
+                        System.out.println("Tentative d'envoi vers " + ip + ":" + 5050);
+                        URL url = new URL("http://" + ip + ":" + 5050 + "/clipboard");
                         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                         conn.setRequestMethod("POST");
                         conn.setDoOutput(true);
