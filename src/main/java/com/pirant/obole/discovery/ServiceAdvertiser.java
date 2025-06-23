@@ -5,11 +5,13 @@ import javax.jmdns.ServiceInfo;
 import java.io.IOException;
 import java.net.InetAddress;
 
+
 public class ServiceAdvertiser {
 
     private final JmDNS jmdns;
     private final int port;
     private ServiceInfo serviceInfo;
+    public static final int SERVER_PORT = 5050;
 
     public ServiceAdvertiser(JmDNS jmdns, int port) {
         this.jmdns = jmdns;

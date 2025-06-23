@@ -6,6 +6,9 @@ module com.pirant.obole {
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
+    requires jdk.httpserver;
+    requires java.datatransfer;
+    requires java.desktop;
 
     opens com.pirant.obole to javafx.fxml;
     exports com.pirant.obole;
