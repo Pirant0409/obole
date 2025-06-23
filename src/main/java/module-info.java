@@ -9,6 +9,7 @@ module com.pirant.obole {
     requires jdk.httpserver;
     requires java.datatransfer;
     requires java.desktop;
+    requires com.google.gson;
 
     opens com.pirant.obole to javafx.fxml;
     exports com.pirant.obole;

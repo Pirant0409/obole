@@ -65,7 +65,6 @@ public class MainApp extends Application{
                 String receiver = findAddress(selected);
                 if (receiver != null){
                     new Thread(() -> {
-                        System.out.println(receiver);
                         try {
                             phandler.send(receiver+"/pair");
                         } catch (Exception e) {
