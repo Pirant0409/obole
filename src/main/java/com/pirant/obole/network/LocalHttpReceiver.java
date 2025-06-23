@@ -1,6 +1,7 @@
 package com.pirant.obole.network;
 
 import com.pirant.obole.utils.ClipboardHandler;
+import com.pirant.obole.utils.PairingHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
@@ -17,8 +18,13 @@ public class LocalHttpReceiver {
         if (server == null) {
             try{
                 server = HttpServer.create(new InetSocketAddress(SERVER_PORT), 0);
+                //TODO: Allow reception only if it's from a trusted device
                 server.createContext("/clipboard", exchange -> {
                     new ClipboardHandler().handle(exchange);
+                });
+                server.createContext("/pair", exchange -> {
+                    new PairingHandler().handle(exchange);
+
                 });
                 server.setExecutor(null);
                 server.start();

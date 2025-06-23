@@ -15,6 +15,8 @@ public class ClipboardHandler implements HttpHandler {
     public void send(String receiver){
         String clipboardText = getClipboard();
 
+        //TODO: encrypt clipboard before sending
+        //TODO: Allow sending only if it is a trusted device
         if (clipboardText != null){
             try{
                 System.out.println("Tentative d'envoi vers " + receiver);
