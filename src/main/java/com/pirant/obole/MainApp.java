@@ -3,6 +3,7 @@ package com.pirant.obole;
 import com.pirant.obole.discovery.ServiceAdvertiser;
 import com.pirant.obole.discovery.ServiceListener;
 import com.pirant.obole.network.LocalHttpReceiver;
+import com.pirant.obole.utils.ClipboardHandler;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,21 +34,11 @@ public class MainApp extends Application{
 
         Button clipBoardButton = new Button("Send clipboard");
         clipBoardButton.setOnAction(e->{
+            ClipboardHandler cbhandler = new ClipboardHandler();
             String selected = listView.getSelectionModel().getSelectedItem();
             if (selected != null) {
-                String clipboardText;
-                try {
-                    clipboardText = (String) Toolkit.getDefaultToolkit().
-                            getSystemClipboard().
-                            getData(DataFlavor.stringFlavor);
-                } catch (Exception ex){
-                    ex.printStackTrace();
-                    return;
-                }
-
                 Pattern pattern = Pattern.compile(".* - ([0-9.]+):(\\d+)");
                 Matcher matcher = pattern.matcher(selected);
-
                 if (!matcher.matches()){
                     System.err.println("Unknown format: " + selected);
                     return;
@@ -55,24 +46,10 @@ public class MainApp extends Application{
 
                 String ip = matcher.group(1);
                 String port = matcher.group(2);
+                //TODO: Hard-coded 5050 port. Should get the right port (not the obole service listener one but the HTTP receiver one)
+                String receiver = "http://" + ip + ":" + 5050 + "/clipboard";
                 new Thread(()->{
-                    try{
-                        System.out.println("Tentative d'envoi vers " + ip + ":" + 5050);
-                        URL url = new URL("http://" + ip + ":" + 5050 + "/clipboard");
-                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                        conn.setRequestMethod("POST");
-                        conn.setDoOutput(true);
-                        conn.setRequestProperty("Content-Type", "text/plain; charset=utf-8");
-
-                        try (OutputStream os = conn.getOutputStream()){
-                            os.write(clipboardText.getBytes("UTF-8"));
-                        }
-
-                        int responseCode = conn.getResponseCode();
-                        System.out.println("Sent to " + ip + ":" + port + " - code " + responseCode);
-                    } catch (IOException ex){
-                        ex.printStackTrace();
-                    }
+                    cbhandler.send(receiver);
                 }).start();
             }
         });
