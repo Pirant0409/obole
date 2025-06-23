@@ -16,6 +16,7 @@ public class LocalHttpReceiver {
             server.createContext("/clipboard", new ClipboardHandler());
             server.setExecutor(null);
             server.start();
+            System.out.println("[HTTP RECEIVER] Listening on port " + SERVER_PORT);
         } catch (IOException e){
             System.err.println("Error while starting HTTPServer:" + e.getMessage());
         }
