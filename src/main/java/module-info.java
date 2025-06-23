@@ -12,5 +12,6 @@ module com.pirant.obole {
     requires com.google.gson;
 
     opens com.pirant.obole to javafx.fxml;
+    opens com.pirant.obole.models to com.google.gson;
     exports com.pirant.obole;
 }

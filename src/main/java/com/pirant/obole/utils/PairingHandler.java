@@ -26,7 +26,7 @@ public class PairingHandler implements HttpHandler {
             String deviceName = InetAddress.getLocalHost().getHostName();
 
             String pk = sm.getPublicKeyBase64();
-            PairingRequest pr = new PairingRequest(pk, deviceName );
+            PairingRequest pr = new PairingRequest(pk, deviceName);
             String json = gson.toJson(pr);
             if (pk != null){
                 System.out.println("Sending public key to " + receiver);

@@ -8,4 +8,12 @@ public class PairingRequest {
         this.publicKey = publicKey;
         this.deviceName = deviceName;
     }
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
 }
