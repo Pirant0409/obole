@@ -136,6 +136,7 @@ public class MainApp extends Application{
         String port = matcher.group(2);
         //TODO: Hard-coded 5050 port. Should get the right port (not the obole service listener one but the HTTP receiver one)
         String receiver = "http://" + ip + ":" + 5050 + "/clipboard";
+        return receiver;
     }
     public static void main(String[] args) {
         launch(args);
