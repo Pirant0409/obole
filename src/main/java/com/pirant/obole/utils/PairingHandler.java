@@ -53,8 +53,7 @@ public class PairingHandler implements HttpHandler {
             //Handling answer
             try(InputStream is = conn.getInputStream()){
                 String response = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-                JsonObject remoteDevice = gson.fromJson(response, JsonObject.class);
-                Device incomingDevice = gson.fromJson(remoteDevice, Device.class);
+                Device incomingDevice = gson.fromJson(response, Device.class);
                 System.out.println("Received device : " + incomingDevice);
 //                if (responseCode == 200 && !PairedUtils.isDeviceKnown(incomingDevice.getFingerPrint())){
 //                    PairedUtils.saveDevice(incomingDevice);
@@ -90,8 +89,8 @@ public class PairingHandler implements HttpHandler {
                         String deviceName = InetAddress.getLocalHost().getHostName();
                         String publicKey = sm.getPublicKeyBase64();
                         String fingerPrint = sm.getFingerPrintBase64(publicKey);
-                        Device pr = new Device(deviceName, publicKey, fingerPrint);
-                        String json = gson.toJson(pr);
+                        Device device = new Device(deviceName, publicKey, fingerPrint);
+                        String json = gson.toJson(device);
 
                         String response = confirmed ? json : "NOK";
                         exchange.sendResponseHeaders(confirmed ? 200 : 403, response.length());
