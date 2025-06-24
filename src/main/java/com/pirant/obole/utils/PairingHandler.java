@@ -39,8 +39,9 @@ public class PairingHandler implements HttpHandler {
                     os.write(json.getBytes("UTF-8"));
                 }
                 System.out.println("Short code : " + sm.getPublicKeyShortCode());
-                String responseCode = conn.getResponseMessage();
-                System.out.println("Sent to " + receiver + " - response: " + responseCode);
+                String responseMsg = conn.getResponseMessage();
+                int responseCode = conn.getResponseCode();
+                System.out.println("Sent to " + receiver + " - response: " + responseMsg);
 
             }
         } catch (Exception ex){
@@ -59,7 +60,7 @@ public class PairingHandler implements HttpHandler {
                 Platform.runLater(()->{
                    boolean confirmed = showConfirmationDialog(deviceName, remoteShortCode);
                    try {
-                       String response = confirmed ? "OK" : "DECLINED";
+                       String response = confirmed ? sm.getPublicKeyBase64() : "NOK";
                        exchange.sendResponseHeaders(confirmed ? 200 : 403, response.length());
                        try (OutputStream os = exchange.getResponseBody()) {
                            os.write(response.getBytes("UTF-8"));
