@@ -31,7 +31,7 @@ public class PairingHandler implements HttpHandler {
             String deviceName = InetAddress.getLocalHost().getHostName();
             String pk = sm.getPublicKeyBase64();
             String fp = sm.getFingerPrintBase64(pk);
-            Device pr = new Device(pk, deviceName, fp);
+            Device pr = new Device(deviceName, pk, fp);
             String json = gson.toJson(pr);
 
             System.out.println("Sending" + json + "to " + receiver);
@@ -49,8 +49,8 @@ public class PairingHandler implements HttpHandler {
             }
             System.out.println("Short code : " + sm.getShortCode(pk));
 
-            //Handling answer
             int responseCode = conn.getResponseCode();
+            //Handling answer
             try(InputStream is = conn.getInputStream()){
                 String response = new String(is.readAllBytes(), StandardCharsets.UTF_8);
                 JsonObject remoteDevice = gson.fromJson(response, JsonObject.class);
@@ -90,7 +90,7 @@ public class PairingHandler implements HttpHandler {
                         String deviceName = InetAddress.getLocalHost().getHostName();
                         String publicKey = sm.getPublicKeyBase64();
                         String fingerPrint = sm.getFingerPrintBase64(publicKey);
-                        Device pr = new Device(publicKey, deviceName, fingerPrint);
+                        Device pr = new Device(deviceName, publicKey, fingerPrint);
                         String json = gson.toJson(pr);
 
                         String response = confirmed ? json : "NOK";
