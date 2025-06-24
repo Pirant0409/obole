@@ -5,7 +5,6 @@ import com.pirant.obole.discovery.ServiceListener;
 import com.pirant.obole.network.LocalHttpReceiver;
 import com.pirant.obole.utils.ClipboardHandler;
 import com.pirant.obole.utils.PairingHandler;
-import com.pirant.obole.utils.SecurityManager;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,13 +17,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import javax.jmdns.JmDNS;
-import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.InetAddress;
-import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -8,7 +8,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
-public class SecurityManager {
+public class RSAManager {
     private static final String KEY_FOLDER = System.getProperty("user.home") + File.separator + ".obole";
     private static final String PUBLIC_KEY_FILE = KEY_FOLDER + File.separator + "public.key";
     private static final String PRIVATE_KEY_FILE = KEY_FOLDER + File.separator + "private.key";
@@ -16,7 +16,7 @@ public class SecurityManager {
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
-    public SecurityManager() throws Exception {
+    public RSAManager() throws Exception {
 
         if (keyExist()){
             loadKeys();
@@ -85,7 +85,7 @@ public class SecurityManager {
     return hexString.toString().toUpperCase();
     }
 
-    public String getRemoteShortCode(String remotePK) throws Exception {
+    public String getPublicKeyShortCode(String remotePK) throws Exception {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] hash = md.digest(remotePK.getBytes("UTF-8"));
         StringBuilder hexString = new StringBuilder();

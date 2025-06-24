@@ -21,7 +21,7 @@ public class PairingHandler implements HttpHandler {
 
     public void send(String receiver){
         try {
-            SecurityManager sm = new SecurityManager();
+            RSAManager sm = new RSAManager();
             Gson gson = new Gson();
             String deviceName = InetAddress.getLocalHost().getHostName();
 
@@ -29,7 +29,7 @@ public class PairingHandler implements HttpHandler {
             PairingRequest pr = new PairingRequest(pk, deviceName);
             String json = gson.toJson(pr);
             if (pk != null){
-                System.out.println("Sending" + json + "to " + receiver);
+                System.out.println("Sending" + json  + "to " + receiver);
                 URL url = new URL(receiver);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
@@ -39,7 +39,7 @@ public class PairingHandler implements HttpHandler {
                     os.write(json.getBytes("UTF-8"));
                 }
                 System.out.println("Short code : " + sm.getPublicKeyShortCode());
-                int responseCode = conn.getResponseCode();
+                String responseCode = conn.getResponseMessage();
                 System.out.println("Sent to " + receiver + " - response: " + responseCode);
 
             }
@@ -54,8 +54,8 @@ public class PairingHandler implements HttpHandler {
             String publicKey = json.get("publicKey").getAsString();
             String deviceName = json.get("deviceName").getAsString();
             try {
-                SecurityManager sm = new SecurityManager();
-                String remoteShortCode = sm.getRemoteShortCode(publicKey);
+                RSAManager sm = new RSAManager();
+                String remoteShortCode = sm.getPublicKeyShortCode(publicKey);
                 Platform.runLater(()->{
                    boolean confirmed = showConfirmationDialog(deviceName, remoteShortCode);
                    try {
