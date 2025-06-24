@@ -11,10 +11,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Optional;
 
 public class PairingHandler implements HttpHandler {
@@ -39,9 +41,12 @@ public class PairingHandler implements HttpHandler {
                     os.write(json.getBytes("UTF-8"));
                 }
                 System.out.println("Short code : " + sm.getPublicKeyShortCode());
-                String responseMsg = conn.getResponseMessage();
                 int responseCode = conn.getResponseCode();
-                System.out.println("Sent to " + receiver + " - response: " + responseMsg);
+                try(InputStream is = conn.getInputStream()){
+                    String response = new String(is.readAllBytes(), "UTF-8");
+                    System.out.println("Response : " + response);
+                }
+                System.out.println(responseCode);
 
             }
         } catch (Exception ex){
