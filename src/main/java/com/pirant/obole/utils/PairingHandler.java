@@ -53,11 +53,11 @@ public class PairingHandler implements HttpHandler {
             //Handling answer
             try(InputStream is = conn.getInputStream()){
                 String response = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-                Device incomingDevice = gson.fromJson(response, Device.class);
-                System.out.println("Received device : " + incomingDevice);
-//                if (responseCode == 200 && !PairedUtils.isDeviceKnown(incomingDevice.getFingerPrint())){
-//                    PairedUtils.saveDevice(incomingDevice);
-//                }
+                Device remoteDevice = gson.fromJson(response, Device.class);
+                System.out.println("Received device : " + remoteDevice);
+                if (responseCode == 200 && !PairedUtils.isDeviceKnown(remoteDevice.getFingerPrint())){
+                    PairedUtils.saveDevice(remoteDevice);
+                }
             }
 
         } catch (Exception ex){
@@ -67,22 +67,20 @@ public class PairingHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         if ("POST".equals(exchange.getRequestMethod())){
 
+            Gson gson = new Gson();
+
             //Reading message and parsing json object to get device data
             String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
-            JsonObject remoteDevice = JsonParser.parseString(body).getAsJsonObject();
-            String remotePublicKey = remoteDevice.get("publicKey").getAsString();
-            String remoteDeviceName = remoteDevice.get("name").getAsString();
-            String remoteFingerPrint = remoteDevice.get("fingerPrint").getAsString();
+            Device remoteDevice = gson.fromJson(body, Device.class);
 
             try {
                 RSAManager sm = new RSAManager();
-                Gson gson = new Gson();
 
                 //Generating shortCode to check if the publicKey hasn't been altered
-                String remoteShortCode = sm.getShortCode(remotePublicKey);
+                String remoteShortCode = sm.getShortCode(remoteDevice.getPublicKey());
                 Platform.runLater(()->
                 {
-                    boolean confirmed = showConfirmationDialog(remoteDeviceName, remoteShortCode);
+                    boolean confirmed = showConfirmationDialog(remoteDevice.getName(), remoteShortCode);
                     try {
 
                         //Sending answer to the other device
@@ -94,10 +92,13 @@ public class PairingHandler implements HttpHandler {
 
                         String response = confirmed ? json : "NOK";
                         exchange.sendResponseHeaders(confirmed ? 200 : 403, response.length());
-
+                        if (confirmed){
+                            PairedUtils.saveDevice(remoteDevice);
+                        }
                         try (OutputStream os = exchange.getResponseBody()) {
                            os.write(response.getBytes(StandardCharsets.UTF_8));
                         }
+
 
                     } catch (Exception ex){
                         ex.printStackTrace();
