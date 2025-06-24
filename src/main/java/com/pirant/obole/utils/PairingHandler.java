@@ -71,7 +71,7 @@ public class PairingHandler implements HttpHandler {
             String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
             JsonObject remoteDevice = JsonParser.parseString(body).getAsJsonObject();
             String remotePublicKey = remoteDevice.get("publicKey").getAsString();
-            String remoteDeviceName = remoteDevice.get("deviceName").getAsString();
+            String remoteDeviceName = remoteDevice.get("name").getAsString();
             String remoteFingerPrint = remoteDevice.get("fingerPrint").getAsString();
 
             try {
