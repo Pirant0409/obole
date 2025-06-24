@@ -1,6 +1,7 @@
 package com.pirant.obole.utils;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.*;
@@ -70,31 +71,26 @@ public class RSAManager {
         return Base64.getEncoder().encodeToString(publicKey.getEncoded());
     }
 
-    public String getPublicKeyShortCode() throws Exception {
-        String pubKeyBase64 = getPublicKeyBase64();
+    public String getFingerPrintHex(String pkb64) throws Exception {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        byte[] hash = md.digest(pubKeyBase64.getBytes("UTF-8"));
-        StringBuilder hexString = new StringBuilder();
+        byte[] hash = md.digest(pkb64.getBytes(StandardCharsets.UTF_8));
 
-        for(int i = 0; i < 3; i++) {
-            String hex = Integer.toHexString(0xff & hash[i]);
-            if(hex.length() == 1) hexString.append('0');
-            hexString.append(hex);
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            hexString.append(String.format("%02X", b));
         }
 
-    return hexString.toString().toUpperCase();
+        return hexString.toString();
     }
 
-    public String getPublicKeyShortCode(String remotePK) throws Exception {
+    public String getFingerPrintBase64(String pkb64) throws Exception {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
-        byte[] hash = md.digest(remotePK.getBytes("UTF-8"));
-        StringBuilder hexString = new StringBuilder();
+        byte[] hash = md.digest(pkb64.getBytes(StandardCharsets.UTF_8));
+        return Base64.getEncoder().encodeToString(hash);
+    }
 
-        for(int i = 0; i < 3; i++) {
-            String hex = Integer.toHexString(0xff & hash[i]);
-            if(hex.length() == 1) hexString.append('0');
-            hexString.append(hex);
-        }
-        return hexString.toString().toUpperCase();
+    public String getShortCode(String pkb64) throws Exception {
+        String fingerPrintHex = getFingerPrintHex(pkb64);
+        return fingerPrintHex.substring(0, 6);
     }
 }
