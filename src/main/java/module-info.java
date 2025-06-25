@@ -10,6 +10,7 @@ module com.pirant.obole {
     requires java.datatransfer;
     requires java.desktop;
     requires com.google.gson;
+    requires org.slf4j;
 
     opens com.pirant.obole to javafx.fxml;
     opens com.pirant.obole.models to com.google.gson;

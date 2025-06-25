@@ -22,7 +22,7 @@ import java.util.Optional;
 
 public class PairingHandler implements HttpHandler {
 
-    public void send(String receiver){
+    public static void send(String receiver){
         try {
             RSAManager sm = new RSAManager();
             Gson gson = new Gson();

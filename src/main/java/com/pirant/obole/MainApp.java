@@ -15,6 +15,8 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jmdns.JmDNS;
 import java.io.IOException;
@@ -24,6 +26,7 @@ import java.util.regex.Pattern;
 
 public class MainApp extends Application{
 
+    private static final Logger log = LoggerFactory.getLogger(MainApp.class);
     private final ObservableList<String> discoveredDevices = FXCollections.observableArrayList();
     private final ObservableList<String> pairedDevices = FXCollections.observableArrayList();
     @Override
@@ -43,8 +46,7 @@ public class MainApp extends Application{
 
         Tab discoveryTab = setupDiscoveryTab();
         Tab pairedTab = setupPairedTab();
-        TabPane tabPane = new TabPane(pairedTab,discoveryTab);
-        return tabPane;
+        return new TabPane(pairedTab,discoveryTab);
 
     }
 
@@ -53,14 +55,13 @@ public class MainApp extends Application{
 
         Button pairButton = new Button("Pair");
         pairButton.setOnAction(event -> {
-            PairingHandler phandler = new PairingHandler();
             String selected = discoveryListView.getSelectionModel().getSelectedItem();
             if (selected != null && !pairedDevices.contains(selected)){
                 String receiver = findAddress(selected);
                 if (receiver != null){
                     new Thread(() -> {
                         try {
-                            phandler.send(receiver+"/pair");
+                            PairingHandler.send(receiver+"/pair");
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -70,9 +71,8 @@ public class MainApp extends Application{
             }
         });
         VBox discoveryTabContent = new VBox(discoveryListView, pairButton);
-        Tab discoveryTab = new Tab("Discovery", discoveryTabContent);
 
-        return discoveryTab;
+        return new Tab("Discovery", discoveryTabContent);
     }
 
     public Tab setupPairedTab(){
@@ -80,13 +80,12 @@ public class MainApp extends Application{
 
         Button clipBoardButton = new Button("Send clipboard");
         clipBoardButton.setOnAction(e->{
-            ClipboardHandler cbhandler = new ClipboardHandler();
             String selected = pairedDevicesListView.getSelectionModel().getSelectedItem();
             if (selected != null) {
                 String receiver = findAddress(selected);
                 if (receiver != null) {
                     new Thread(()->{
-                        cbhandler.send(receiver+"/clipboard");
+                        ClipboardHandler.send(receiver+"/clipboard");
                     }).start();
 
                 }
@@ -94,9 +93,8 @@ public class MainApp extends Application{
         });
 
         VBox pairedDevicesTabContent = new VBox(pairedDevicesListView, clipBoardButton);
-        Tab pairedTab = new Tab("Paired Devices", pairedDevicesTabContent);
 
-        return pairedTab;
+        return new Tab("Paired Devices", pairedDevicesTabContent);
     }
 
     public void runDiscovery(){
@@ -108,12 +106,12 @@ public class MainApp extends Application{
                 ServiceAdvertiser advertiser = new ServiceAdvertiser(jmdns,5000);
                 advertiser.start();
 
-                ServiceListener listener = new ServiceListener(discoveredDevices);
+                ServiceListener listener = new ServiceListener(discoveredDevices, pairedDevices);
                 jmdns.addServiceListener("_obole._tcp.local.", listener);
 
                 new LocalHttpReceiver().start();
-            } catch (IOException e){
-                System.err.println(e);
+            } catch (Exception e){
+                log.error("e: ", e);
             }
         }).start();
     }
@@ -129,8 +127,7 @@ public class MainApp extends Application{
         String ip = matcher.group(1);
         String port = matcher.group(2);
         //TODO: Hard-coded 5050 port. Should get the right port (not the obole service listener one but the HTTP receiver one)
-        String receiver = "http://" + ip + ":" + 5050;
-        return receiver;
+        return "http://" + ip + ":" + 5050;
     }
     public static void main(String[] args) {
         launch(args);

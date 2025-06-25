@@ -12,7 +12,7 @@ import java.net.URL;
 
 public class ClipboardHandler implements HttpHandler {
 
-    public void send(String receiver){
+    public static void send(String receiver){
         String clipboardText = getClipboard();
 
         //TODO: encrypt clipboard before sending
@@ -55,7 +55,7 @@ public class ClipboardHandler implements HttpHandler {
         }
     }
 
-    public String getClipboard(){
+    public static String getClipboard(){
         String cbText;
         try {
             cbText = (String) Toolkit.getDefaultToolkit().

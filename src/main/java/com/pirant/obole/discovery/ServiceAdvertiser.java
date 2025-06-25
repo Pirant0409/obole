@@ -1,5 +1,7 @@
 package com.pirant.obole.discovery;
 
+import com.pirant.obole.utils.RSAManager;
+
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 import java.io.IOException;
@@ -18,13 +20,16 @@ public class ServiceAdvertiser {
         this.port = port;
     }
 
-    public void start (){
+    public void start () throws Exception {
+        RSAManager rsa = new RSAManager();
+
         try{
             String serviceType = "_obole._tcp.local.";
-            String serviceName = InetAddress.getLocalHost().getHostName();
-            String description = "Obole Service Advertiser";
+            String deviceName = InetAddress.getLocalHost().getHostName();
+            String deviceFingerPrint = rsa.getFingerPrintBase64(rsa.getPublicKeyBase64());
+            System.out.println("fp: " + deviceFingerPrint);
 
-            serviceInfo = ServiceInfo.create(serviceType,serviceName,port,description);
+            serviceInfo = ServiceInfo.create(serviceType, deviceName,port, deviceFingerPrint);
 
             jmdns.registerService(serviceInfo);
 
