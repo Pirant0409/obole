@@ -29,7 +29,8 @@ public class PairedUtils {
     }
     public static boolean isDeviceKnown(String fp) throws FileNotFoundException {
         List<Device> allDevices = getPairedDevices();
-
+        System.out.println("device :" + allDevices);
+        System.out.println("fingerprint :" + fp);
         Device existingDevice = allDevices.stream().filter(d->d.getFingerPrint().equals(fp)).findFirst().orElse(null);
         return existingDevice != null;
     }

@@ -48,7 +48,7 @@ public class ServiceListener implements javax.jmdns.ServiceListener{
             boolean isKnown = false;
             ServiceInfo info = event.getInfo();
             String remoteAddress = info.getHostAddresses()[0];
-            String fp = info.getNiceTextString();
+            String fp = info.getPropertyString("fingerprint");
             try {
                 isKnown = PairedUtils.isDeviceKnown(fp);
             } catch (FileNotFoundException e) {

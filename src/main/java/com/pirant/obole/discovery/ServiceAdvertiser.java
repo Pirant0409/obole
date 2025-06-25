@@ -6,6 +6,8 @@ import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ServiceAdvertiser {
@@ -26,10 +28,11 @@ public class ServiceAdvertiser {
         try{
             String serviceType = "_obole._tcp.local.";
             String deviceName = InetAddress.getLocalHost().getHostName();
+            Map<String, String> props = new HashMap<>();
             String deviceFingerPrint = rsa.getFingerPrintBase64(rsa.getPublicKeyBase64());
-            System.out.println("fp: " + deviceFingerPrint);
-
-            serviceInfo = ServiceInfo.create(serviceType, deviceName,port, deviceFingerPrint);
+            props.put("fingerprint", deviceFingerPrint);
+            System.out.println("props: " + props);
+            serviceInfo = ServiceInfo.create(serviceType, deviceName,port,0,0, props);
 
             jmdns.registerService(serviceInfo);
 
