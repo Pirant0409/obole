@@ -37,8 +37,14 @@ public class ServiceListener implements javax.jmdns.ServiceListener{
 
     @Override
     public void serviceRemoved(ServiceEvent event) {
-        System.out.println("Service removed: " + event.getName());
-        discoveredDevices.remove(event.getName());
+        //TODO: What if the app hasn't been exited properly (service killed, ...)
+        String name = event.getName();
+        Platform.runLater(() -> {
+                //TODO: Use fingerprint instead of name
+                discoveredDevices.removeIf(entry -> entry.startsWith(name));
+                pairedDevices.removeIf(entry -> entry.startsWith(name));
+                System.out.println("Service removed: " + event.getName());
+            });
     }
 
     @Override

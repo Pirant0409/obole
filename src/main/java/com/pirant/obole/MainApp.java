@@ -59,7 +59,7 @@ public class MainApp extends Application{
         Button pairButton = new Button("Pair");
         pairButton.setOnAction(event -> {
             String selected = discoveryListView.getSelectionModel().getSelectedItem();
-            if (selected != null && !pairedDevices.contains(selected)){
+            if (selected != null){
                 String receiver = findAddress(selected);
                 if (receiver != null){
                     new Thread(() -> {
