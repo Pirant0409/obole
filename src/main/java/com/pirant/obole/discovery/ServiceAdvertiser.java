@@ -31,7 +31,6 @@ public class ServiceAdvertiser {
             Map<String, String> props = new HashMap<>();
             String deviceFingerPrint = rsa.getFingerPrintBase64(rsa.getPublicKeyBase64());
             props.put("fingerprint", deviceFingerPrint);
-            System.out.println("props: " + props);
             serviceInfo = ServiceInfo.create(serviceType, deviceName,port,0,0, props);
 
             jmdns.registerService(serviceInfo);
@@ -42,10 +41,11 @@ public class ServiceAdvertiser {
         }
     }
 
-    public void stop(){
-        if (serviceInfo != null){
+    public void stop() throws IOException {
+        if (serviceInfo != null && jmdns != null) {
             jmdns.unregisterService(serviceInfo);
             serviceInfo = null;
+            jmdns.close();
             System.out.println("Service Advertiser stopped");
         }
     }

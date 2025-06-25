@@ -49,12 +49,13 @@ public class ServiceListener implements javax.jmdns.ServiceListener{
             ServiceInfo info = event.getInfo();
             String remoteAddress = info.getHostAddresses()[0];
             String fp = info.getPropertyString("fingerprint");
+            System.out.println("Remote name: " + info.getName() + ", remote fp: " + fp);
             try {
                 isKnown = PairedUtils.isDeviceKnown(fp);
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
-            if (!remoteAddress.equals(localHostAddress)){
+            if (!remoteAddress.equals(localHostAddress) && fp != null){
                 String entry = info.getName() + " - " + remoteAddress + ":" + info.getPort();
                 if (!discoveredDevices.contains(entry) && !isKnown){
                     System.out.println("Service resolved: " + entry);

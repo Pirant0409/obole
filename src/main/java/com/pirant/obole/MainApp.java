@@ -29,6 +29,9 @@ public class MainApp extends Application{
     private static final Logger log = LoggerFactory.getLogger(MainApp.class);
     private final ObservableList<String> discoveredDevices = FXCollections.observableArrayList();
     private final ObservableList<String> pairedDevices = FXCollections.observableArrayList();
+    private ServiceAdvertiser advertiser;
+
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -103,7 +106,7 @@ public class MainApp extends Application{
             try{
                 InetAddress localAddress = InetAddress.getLocalHost();
                 jmdns = JmDNS.create(localAddress);
-                ServiceAdvertiser advertiser = new ServiceAdvertiser(jmdns,5000);
+                advertiser = new ServiceAdvertiser(jmdns,5000);
                 advertiser.start();
 
                 ServiceListener listener = new ServiceListener(discoveredDevices, pairedDevices);
@@ -128,6 +131,13 @@ public class MainApp extends Application{
         String port = matcher.group(2);
         //TODO: Hard-coded 5050 port. Should get the right port (not the obole service listener one but the HTTP receiver one)
         return "http://" + ip + ":" + 5050;
+    }
+    @Override
+    public void stop() throws Exception {
+        if (advertiser != null){
+            advertiser.stop();
+        }
+        super.stop();
     }
     public static void main(String[] args) {
         launch(args);
